@@ -8,16 +8,17 @@ import (
 )
 
 func AdminRouter() http.Handler {
-	r := chi.NewRouter()
-	r.Use(middleware.BasicAuth("BasicAuth", map[string]string{
+	router := chi.NewRouter()
+
+	router.Use(middleware.BasicAuth("BasicAuth", map[string]string{
 		"Admin": "Password",
 	}))
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	router.Get("/", func(w http.ResponseWriter, _ *http.Request) {
 		w.Write([]byte("Admin Router Reached"))
 	})
 
-	r.Get("/panel", func(w http.ResponseWriter, r *http.Request) {
+	router.Get("/panel", func(w http.ResponseWriter, _ *http.Request) {
 		w.Write([]byte("Panel Reached"))
 	})
-	return r
+	return router
 }

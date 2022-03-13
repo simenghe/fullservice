@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net/http"
 	"time"
@@ -35,18 +34,5 @@ func main() {
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	select {
-	case <-r.Context().Done():
-		switch r.Context().Err() {
-		case context.DeadlineExceeded:
-			w.WriteHeader(504)
-			w.Write([]byte("Processing too slow\n"))
-		default:
-			w.Write([]byte("Canceled\n"))
-		}
-		return
-
-	default:
-	}
 	w.Write([]byte("Home Page Reached\n"))
 }
