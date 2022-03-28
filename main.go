@@ -1,9 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"fullservice/middlewares"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
@@ -12,6 +13,11 @@ import (
 const (
 	PORT = ":5000"
 )
+
+type CompositeKey struct {
+	X int `json:"x"`
+	Y int `json:"y"`
+}
 
 func Square(n int) int {
 	return n * n
@@ -24,7 +30,8 @@ func main() {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
-	r.Use(middleware.Timeout(5 * time.Second))
+
+	r.Use(middlewares.Json)
 
 	r.Get("/", HomePage)
 	r.Mount("/admin", AdminRouter())
@@ -34,5 +41,7 @@ func main() {
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Home Page Reached\n"))
+	w.Header().Set("Content-Type", "application/json")
+	key := CompositeKey{1, 2}
+	json.NewEncoder(w).Encode(key)
 }
